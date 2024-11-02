@@ -1,0 +1,17 @@
+.system-widget {
+  background: #2e2e2e;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+}
+
+.profile-picture {
+  border-radius: 50%;
+}
+
+.volume-slider, .icon, .content {
+  color: #f54263;
+}
+.hover-module {
+  transition: opacity 0.3s ease;
+}
