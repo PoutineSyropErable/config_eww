@@ -1,0 +1,59 @@
+(defwidget system_widget []
+  (box
+    :orientation "vertical"
+    :spacing 10
+    :class "system-widget"
+    
+    ;; User Profile
+    (box
+      :orientation "horizontal"
+      :spacing 10
+      (image :path "~/.config/eww/profile.jpg" :width 40 :height 40 :class "profile-picture") ;; Add a profile picture here
+      (box
+        :orientation "vertical"
+        (label :text "{user}@{hostname}" :class "username") ;; Use `whoami` or similar to get user dynamically
+        (label :text "Uptime: {uptime}" :class "uptime") ;; Replace `{uptime}` with system command
+      )
+    )
+
+    ;; Volume Control
+    (box
+      :orientation "horizontal"
+      :spacing 10
+      (label :text "Volume" :class "label")
+      (slider :class "volume-slider" :value "50" :onchange "amixer set Master {value}%") ;; Adjust command as needed
+    )
+    
+    ;; Wi-Fi Toggle
+    (button :class "wifi-toggle"
+      :onclick "nmcli radio wifi toggle" ;; Adjust if using network-manager or another manager
+      (label :text "WiFi: {wifi_status}")) ;; Replace `{wifi_status}` with dynamic check
+
+    ;; Bluetooth Toggle
+    (button :class "bluetooth-toggle"
+      :onclick "bluetoothctl power toggle" ;; Adjust if using a different command
+      (label :text "Bluetooth: {bluetooth_status}")) ;; Replace `{bluetooth_status}` with dynamic check
+
+    ;; Additional Toggles
+    (box
+      :orientation "horizontal"
+      :spacing 10
+      (button :text "Night Light" :class "nightlight-toggle" :onclick "command for night light")
+      (button :text "Caffeine" :class "caffeine-toggle" :onclick "command for caffeine")
+    )
+    
+    ;; Media Player
+    (box
+      :orientation "horizontal"
+      :spacing 5
+      (button :text "⏮" :onclick "playerctl previous")
+      (button :text "⏯" :onclick "playerctl play-pause")
+      (button :text "⏭" :onclick "playerctl next")
+      (box
+        :orientation "vertical"
+        (label :text "{song_title}" :class "song-title") ;; Use `playerctl` or similar to get song info
+        (label :text "{artist}" :class "song-artist")
+      )
+    )
+  )
+)
