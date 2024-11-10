@@ -1,0 +1,21 @@
+(defwindow example
+           :monitor 0
+           :geometry (geometry :x "40%"
+                               :y "-150px"
+                               :width "300px" 
+                               :height "30px"
+                               :anchor "bottom center")
+           :stacking "fg"
+           :reserve (struts :distance "40px" :side "top")
+           :windowtype "dock"
+           :wm-ignore true
+ (labeled-container :name "foo"
+   (button :onclick "notify-send hey ho"
+     "click me")))
+ 
+
+(defwidget labeled-container [name]
+  (box :class "container"
+    name
+    (children)))
+

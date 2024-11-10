@@ -1,0 +1,30 @@
+(defwindow example
+           :monitor 0
+           :geometry (geometry :x "40%"
+                               :y "-150px"
+                               :width "300px" 
+                               :height "30px"
+                               :anchor "bottom center")
+           :stacking "fg"
+           :reserve (struts :distance "40px" :side "top")
+           :windowtype "dock"
+           :wm-ignore true
+  (greeter :text "Say hello!"
+  :name "Tim"))
+
+ 
+ 
+
+   
+
+
+
+
+(defwidget greeter [?text name]
+  (box :orientation "horizontal"
+       :halign "center"
+    text
+    (button :onclick "notify-send 'Hello' 'Hello, ${name}'"
+      "Greet")))
+
+
