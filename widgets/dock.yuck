@@ -1,0 +1,51 @@
+; Hyprwwland Copyright (c) 2023 darkmaster grm34.
+; https://github.com/grm34/Hyprwwland
+
+
+(defvar dock_visible false)
+
+(defpoll dock_manager :interval "5m" :initial "[]"
+  "scripts/dock_manager"
+)
+
+
+(defwidget dock []
+  (eventbox :class "dock"
+            :valign "center"
+            :timeout "10s"
+            :onhover "scripts/window_manager dock"
+            :onhoverlost "${EWW_CMD} update dock_visible=false"
+    (box :space-evenly false
+
+      ; Button (visible).
+      (revealer :reveal "${!dock_visible}"
+                :transition "slideright"
+                :duration "250ms"
+        (eventbox :valign "center"
+                  :width 6
+                  :tooltip "dock"
+                  :cursor "pointer"
+                  :onclick "${EWW_CMD} update dock_visible=true"
+          (image :path "assets/images/dock.png"
+                 :image-width 6)
+      ))
+
+      ; Content (onclick/onhover).
+      (revealer :reveal {dock_visible}
+                :transition "slideleft"
+                :duration "250ms"
+        (box :class "dock-applications"
+             :orientation "v"
+             :style "padding-left: 4px"
+
+          (for app in dock_manager
+            (eventbox :class "dock-app"
+                      :tooltip {app.name}
+                      :onclick {app.cmd}
+                      :cursor "pointer"
+              (image :path {app.icon}
+                     :image-width {app.size})
+          ))
+      ))
+)))
+

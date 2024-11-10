@@ -1,0 +1,96 @@
+; Hyprwwland Copyright (c) 2023 darkmaster grm34.
+; https://github.com/grm34/Hyprwwland
+
+
+(defvar cpu_graph false)
+(defvar ram_graph false)
+(defvar disk_graph false)
+(defvar temp_graph false)
+
+
+(defwidget progress_reveal [class visible icon content]
+  (eventbox :class {class}
+            :cursor "progress"
+            :timeout "2s"
+            :onhover "${EWW_CMD} update ${class}_graph=true"
+            :onhoverlost "${EWW_CMD} update ${class}_graph=false"
+    (box :space-evenly false
+         :orientation "v"
+
+      ; progress (visible).
+      (revealer :reveal {!visible}
+                :transition "slideup"
+                :duration "250ms"
+        (box :orientation "v"
+          (box :orientation "h"
+               :halign "center"
+               :valign "end"
+               :space-evenly false
+               :spacing 8
+            (label :class "${class}-box-icon"
+                   :text {icon})
+            (label :class "${class}-box-text"
+                   :text {class != 'temp' ? "${content}%"
+                                          : "${content}°C"}))
+          (progress :halign "center"
+                    :valign "start"
+                    :value {content}
+                    :orientation "h")
+      ))
+
+      ; graph (onhover).
+      (revealer :reveal {visible}
+                :transition "slidedown"
+                :duration "250ms"
+        (graph :class "${class}-box-graph"
+               :height 22
+               :thickness 2
+               :value {content}
+               :time-range "10s"
+               :dynamic true
+               :line-style "round")
+      ))
+))
+
+
+(defwidget mainbar []
+  (box :class "mainbar"
+       :orientation "h"
+       :halign "center"
+       :space-evenly false
+       :spacing 10
+
+    ; Menu.
+    (eventbox :class "menu"
+              :cursor "pointer"
+              :tooltip "Menu"
+              ; :onclick "${EWW_CMD} open menu"
+              ; :onrightclick "${EWW_CMD} close menu"
+      (image :path "assets/images/menu.png"
+             :image-width 20))
+
+    ; Cpu.
+    (progress_reveal :class "cpu"
+                     :visible {cpu_graph}
+                     :icon {icon.cpu}
+                     :content {EWW_CPU.avg})
+
+    ; Ram.
+    (progress_reveal :class "ram"
+                     :visible {ram_graph}
+                     :icon {icon.ram}
+                     :content {EWW_RAM.used_mem_perc})
+
+    ; Disk.
+    (progress_reveal :class "disk"
+                     :visible {disk_graph}
+                     :icon {icon.disk}
+                     :content {EWW_DISK["/"].used_perc})
+
+    ; Temp.
+    (progress_reveal :class "temp"
+                     :visible {temp_graph}
+                     :icon {icon.temp}
+                     :content {EWW_TEMPS.CORETEMP_CORE_0})
+))
+
