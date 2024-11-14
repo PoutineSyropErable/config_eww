@@ -283,9 +283,9 @@
 )
 
 (defwindow sidebar
-    :monitor 0
+    :monitor 1
     :geometry (geometry :x "16px"
-                        :y "10px"
+                        :y "-4px"
                         :width "110px"
                         :height "60%"
                         :anchor "top left")
