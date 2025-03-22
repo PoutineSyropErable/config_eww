@@ -6,12 +6,12 @@
 (defpoll time :interval "5s" "date '+%H:%M'")
 
 ;; ENV VARS
-(defpoll wm :interval "12h" "echo $XDG_CURRENT_DESKTOP")
-;;(defpoll wm :initial "..." :interval "12h" "$HOME/.config/scripts/display.sh &") 
+;;(defpoll wm :interval "12h" "echo $XDG_CURRENT_DESKTOP")
+(defpoll wm :initial "..." :interval "12h" "$HOME/.config/scripts/display.sh &") 
 (defpoll shell :interval "1h" "echo $SHELL | awk -F'/' '{print $NF}'")
 (defpoll term :interval "1h" "echo $TERM | awk -F'-' '{print $NF}'")
-(defpoll uptime :interval "1m" "$HOME/.config/scripts/uptime.sh &")
-;;(defpoll packages :interval "15m" "pacman -Q | wc -l")
+(defpoll uptime :interval "1m" "uptime -p | sed -e 's/up //;s/ hours,/h/;s/ minutes/m/;s/ [0-9]\+m//'")
+(defpoll packages :interval "15m" "pacman -Q | wc -l")
 (defpoll updates_poll :initial "..." :interval "10m" "$HOME/.config/scripts/updates.sh &") 
 ;; WEATHER VARS
 (defpoll weather_temp :interval "1h" :initial "0"
@@ -125,7 +125,7 @@
         (box :orientation "h" :width 130 
             (graph  :class "network-graph-up"
                     :thickness 2
-                    :value {round(EWW_NET.enp14s0.NET_UP / (1024 * 1024) ,1)}
+                    :value {round(EWW_NET['enp14s0'].NET_UP / 1024 ,1)}
                     :time-range "2m"
                     :min 0
                     :max 101
@@ -143,7 +143,7 @@
         (box :orientation "h" :width 130
             (graph  :class "network-graph-down"
                     :thickness 2
-                    :value {round(EWW_NET.enp14s0.NET_DOWN / 1024 ,1)}
+                    :value {round(EWW_NET['enp14s0'].NET_DOWN / 1024 ,1)}
                     :time-range "2m"
                     :min 0
                     :max 101
@@ -221,7 +221,7 @@
     (label :text "Apps" :class "app-label")
         (box :class "app-box" :orientation "h" :space-evenly "false" :hexpand "false" :vexpand "false" :spacing 10
             (button :class "app-firefox" 
-			    :onclick "kitty -e fish 2> /dev/null" "")
+			    :onclick "alacritty -e zsh 2> /dev/null" "")
 	        (button :class "app-files" 
 			    :onclick "thunar 2> /dev/null" "")
             (button :class "app-code" 
@@ -232,7 +232,6 @@
     )
 )
 
-;; I don't use functions, it can't even work properly anyway
 ;; Functions
 (defwidget functions []
     (box :class "function-container" :orientation "v" :space-evenly "true" :hexpand "false" :vexpand "false" :halign "center"
@@ -241,7 +240,7 @@
             (button :class "screenshot"
                 :onclick "bash $HOME/.config/scripts/screenshot.sh 2> /dev/null"
                 :tooltip "Screenshot"
-            (label :text "" :class "tooltip"))
+            (label :text " " :class "tooltip"))
             (button :class "wallpaper"
                 :onclick "bash $HOME/.config/scripts/wallpaper.sh 2> /dev/null"
                 :tooltip "Wallpaper"
@@ -278,21 +277,19 @@
         (disktemp)
         (system)
 	(dash)
-	; (functions)
+	(functions)
     )
 )
 
 (defwindow sidebar
     :monitor 0
     :geometry (geometry :x "16px"
-                        :y "-4px"
-                        :width "110px"
+                        :y "40px"
+                        :width "140px"
                         :height "60%"
                         :anchor "top left")
     :stacking "fg"
     :windowtype "dock"
-    :focusable false
-    :namespace "sidebar_namespace"
     :exclusive true
         (box :class "main-container"
         (right)
